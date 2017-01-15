@@ -2,29 +2,30 @@ var con = require('../db');
 
 module.exports = {
   messages: {
-    get: function () {
-
-      var data;
-
-      con.query('SELECT * FROM messages', function(error, result) {
-        if (error) {
-          //return error;
-          //throw error;
-          console.log('ERROR:', error);
+    get: function (res) {
+      //console.log('RES', res);
+      $sql = 'SELECT * FROM messages';
+      con.query($sql, function(error, result) {
+        
+        if (result.length > 0) {
+          res.setHeader('Content-Type', 'application/json');
+          res.send(result);
+        } else {
+          console.log('no results');
         }
-        //return rows;
-        console.log('RESULT:', result);
-        console.log('MESSAGE:', result[0].message);
-
-
-        data = result[0].message;
         
       });
 
       return 'HELLO';
 
     }, // a function which produces all the messages
-    post: function () {} // a function which can be used to insert a message into the database
+    post: function (message) {
+      $sql = 'INSERT INTO messages VALUES (null, \'' + message + '\', null, 1, 1)';
+      con.query($sql, function(error, result) {
+
+      });
+      return;
+    } // a function which can be used to insert a message into the database
   },
 
   users: {
@@ -32,7 +33,14 @@ module.exports = {
     get: function () {
       console.log('does this work?');
     },
-    post: function () {}
+    post: function (username) {
+      $sql = 'INSERT INTO users VALUES (null, \'' + username + '\')';
+      con.query($sql, function(error, result) {
+        console.log('result: ', result);
+      });
+      return;
+
+    }
   }
 };
 
